@@ -87,44 +87,50 @@ bhyve_efi_vars="$bhyve_efi_vars"
 rcd_script_path="$rcd_script_path"
 EOF
 
-    echo "\nConfiguration saved to $config_file"
+    echo ""
+    echo "Configuration saved to $config_file"
 
     # Download HAOS image if not present
     IMG_FILE="haos.qcow2.xz"
     IMG_URL="$haos_image_url"
 
     if [ ! -f "$IMG_FILE" ]; then
-        echo "\nDownloading Home Assistant image..."
+        echo ""
+        echo "Downloading Home Assistant image..."
         fetch -o "$IMG_FILE" "$IMG_URL"
     else
-        echo "\n$IMG_FILE already exists. Skipping download."
+        echo ""
+        echo "$IMG_FILE already exists. Skipping download."
     fi
 
     # Unpack image
     QCOW2_FILE="haos.qcow2"
     if [ ! -f "$QCOW2_FILE" ]; then
-        echo "\nExtracting image..."
+        echo ""
+        echo "Extracting image..."
         xz -d "$IMG_FILE"
     fi
 
     # Create install path if not exists
     if [ ! -d "$install_path" ]; then
-        echo "\nCreating VM directory: $install_path"
+        echo ""
+        echo "Creating VM directory: $install_path"
         mkdir -p "$install_path"
     fi
 
     # Convert to raw if not already done
     if [ ! -f "$disk_path" ]; then
-        echo "\nConverting image to raw..."
+        echo ""
+        echo "Converting image to raw..."
         qemu-img convert -f qcow2 -O raw "$QCOW2_FILE" "$disk_path"
     fi
 
     # Copy UEFI firmware files
     if [ ! -f "$bhyve_uefi_fd" ]; then
-        cp /boot/firmware/UEFI.fd "$bhyve_uefi_fd"
+        cp /usr/local/share/uefi-firmware/BHYVE_BHF_UEFI.fd "$bhyve_uefi_fd"
     fi
     if [ ! -f "$bhyve_efi_vars" ]; then
-        cp /boot/firmware/EFI_VARS.fd "$bhyve_efi_vars"
+        cp /usr/local/share/uefi-firmware/BHYVE_BHF_UEFI_VARS.fd "$bhyve_efi_vars"        
     fi
 
     # Generate rc.d script for this VM
@@ -168,8 +174,8 @@ run_rc_command "\$1"
 RC
 
     chmod +x "$rcd_script_path"
-    echo "✅ rc.d script created at $rcd_script_path"
-
-    echo "\n✅ Home Assistant VM setup complete. Run 'make install' to finish setup."
-    echo "📄 Log written to $LOG_FILE"
+    echo "rc.d script created at $rcd_script_path"
+    echo ""
+    echo "Home Assistant VM setup complete. Run 'make install' to finish setup."
+    echo "Log written to $LOG_FILE"
 ) 2>&1 | tee -a "$LOG_FILE"
