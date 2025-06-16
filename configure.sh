@@ -1,4 +1,3 @@
-
 #!/bin/sh
 
 # Interactive configuration wizard for bhyve Home Assistant VM
@@ -6,18 +5,26 @@
 
 CONFIG_DIR="/usr/local/etc"
 LOG_FILE="configure.log"
-exec > "$LOG_FILE" 2>&1
+
+# Enable timestamped logging to both terminal and logfile
+exec > >(tee -a "$LOG_FILE") 2>&1
+export PS4='+ [$(date "+%Y-%m-%d %H:%M:%S")] '
+set -x
+
+echo "==== Starting Home Assistant VM configuration wizard ===="
+echo "Logging to: $LOG_FILE"
 
 # Check for required tools
 TOOLS="fetch xz qemu-img mkdir cp"
 echo "Checking required tools..."
 for tool in $TOOLS; do
     if ! command -v "$tool" >/dev/null 2>&1; then
-        echo "Error: required tool '$tool' is missing. Please install it."
+        echo "❌ Error: required tool '$tool' is missing. Please install it."
         exit 1
     fi
-    echo "Found: $tool"
+    echo "✅ Found: $tool"
 done
+
 
 prompt() {
     var="$1"
