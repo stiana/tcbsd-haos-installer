@@ -40,7 +40,7 @@ LOG_FILE="configure.log"
     prompt vnc_port "5900" "Enter VNC port (5900 = :0)"
     prompt framebuffer_width "1280" "Enter framebuffer width"
     prompt framebuffer_height "1024" "Enter framebuffer height"
-    prompt haos_image_url "https://github.com/home-assistant/operating-system/releases/download/12.3/haos_ova-12.3.qcow2.xz" "Enter Home Assistant OS image URL"
+    prompt haos_image_url "https://github.com/home-assistant/operating-system/releases/download/15.2/haos_ova-15.2.qcow2.xz" "Enter Home Assistant OS image URL"
 
     # Paths derived from vm_name
     install_path="/vms/${vm_name}"
